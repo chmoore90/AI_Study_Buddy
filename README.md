@@ -1,2 +1,4 @@
 # AI_Study_Buddy
-Polished version of a final project
+Study with Al the AI
+
+Study tool with two modes: Q&A, quiz generator
