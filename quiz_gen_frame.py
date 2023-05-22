@@ -38,7 +38,9 @@ class QuizGenerator(ctk.CTkFrame):
         self.init_prequiz()
 
     def init_settings(self):
-        inner_border = ctk.CTkLabel(self.settings_frame, text=" ", font=Font(size=6), bg_color="grey70")
+        inner_border = ctk.CTkLabel(
+            self.settings_frame, text=" ", font=Font(size=8), bg_color="#979DA2"
+        )
         inner_border.grid(row=0, column=1, rowspan=10, sticky="ns")
 
         title = ctk.CTkLabel(
@@ -104,7 +106,16 @@ class QuizGenerator(ctk.CTkFrame):
             state="normal",
             command=self.validate_quiz,
         )
-        self.gen_quiz_button.grid(row=6, column=0, padx=10, pady=(50, 85))
+        self.gen_quiz_button.grid(row=6, column=0, padx=10, pady=(50, 0))
+
+        self.save_quiz_button = ctk.CTkButton(
+            self.settings_frame,
+            width=100,
+            text="Save Quiz",
+            font=Font(size=16),
+            state="normal",
+        )
+        self.save_quiz_button.grid(row=7, column=0, pady=(20, 38))
 
     def init_prequiz(self):
         prequiz_text = ctk.CTkLabel(
@@ -113,18 +124,18 @@ class QuizGenerator(ctk.CTkFrame):
             text="Your quiz will show up here once it has been generated.",
         )
         prequiz_text.grid(
-            row=0, column=0, columnspan=2, padx=130, pady=(170, 0), sticky="nswe"
+            row=0, column=0, columnspan=2, padx=120, pady=(170, 0), sticky="nswe"
         )
 
         prequiz_text2 = ctk.CTkLabel(
             self.prequiz_frame,
             font=Font(size=18),
-            text="Did you want to open a saved quiz? Click here: ",
+            text="Did you want to open a saved quiz?",
         )
         prequiz_text2.grid(row=1, column=0, pady=(10, 170), sticky="nse")
 
         button_to_saves = ctk.CTkButton(
-            self.prequiz_frame, font=Font(size=16), text="Saved Quizzes"
+            self.prequiz_frame, width=80, font=Font(size=16), text="Click here"
         )
         button_to_saves.grid(row=1, column=1, padx=10, pady=(10, 170), sticky="w")
 
@@ -178,9 +189,9 @@ class QuizGenerator(ctk.CTkFrame):
         end = al_response.rfind("]")
         al_response = al_response[start : end + 1]
 
+        print(al_response)
+
         quiz_data = json.loads(al_response)
         quiz = quiz_frame.Quiz(self)
-
-        print(quiz_data)
-
+        quiz.tkraise()
         quiz.init_quiz(subject, ed_level, user_topic, quiz_data)

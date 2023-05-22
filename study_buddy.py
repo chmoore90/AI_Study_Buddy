@@ -17,9 +17,10 @@ blank_frame.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="nsew")
 ask_frame = AskFrame(root)
 quiz_gen_frame = QuizGenerator(root)
 quiz_frame = Quiz(quiz_gen_frame)
-quiz_results_frame = QuizResults(quiz_gen_frame)
+quiz_results_frame = QuizResults(quiz_frame)
 home = Home(root, ask_frame, quiz_gen_frame)
 
+quiz_gen_frame.prequiz_frame.tkraise()
 blank_frame.tkraise()
 
 root.mainloop()
