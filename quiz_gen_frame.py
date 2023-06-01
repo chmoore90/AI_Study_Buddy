@@ -26,6 +26,8 @@ ed_level_list = [
 class QuizGenerator(ctk.CTkFrame):
     def __init__(self, root):
         super().__init__(root, border_width=2)
+        self.configure(width=500, height=400)
+        self.propagate(False)
         self.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="nsew")
 
         self.settings_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -65,7 +67,7 @@ class QuizGenerator(ctk.CTkFrame):
             width=200,
             placeholder_text="Enter a subject here:",
             state="normal",
-            text_color="grey20",
+            text_color="grey10",
             font=Font(size=14),
         )
 
@@ -81,7 +83,7 @@ class QuizGenerator(ctk.CTkFrame):
         self.ed_level_dropdown.grid(row=1, column=0, padx=10, pady=(10, 20))
 
         user_topic_label = ctk.CTkLabel(
-            self.settings_frame, text="Topic:", font=Font(size=14), text_color="grey20"
+            self.settings_frame, text="Topic:", font=Font(size=14), text_color="grey10"
         )
         user_topic_label.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="w")
 
@@ -90,14 +92,14 @@ class QuizGenerator(ctk.CTkFrame):
             width=200,
             placeholder_text="Enter a topic here (optional)",
             state="normal",
-            text_color="grey20",
+            text_color="grey10",
             font=Font(size=14),
         )
         self.user_topic_entry.grid(row=5, column=0, padx=10)
 
         self.gen_quiz_button = ctk.CTkButton(
             self.settings_frame,
-            border_width=1,
+            border_width=2,
             border_color="#36719F",
             width=200,
             height=50,
@@ -106,16 +108,7 @@ class QuizGenerator(ctk.CTkFrame):
             state="normal",
             command=self.validate_quiz,
         )
-        self.gen_quiz_button.grid(row=6, column=0, padx=10, pady=(50, 0))
-
-        self.save_quiz_button = ctk.CTkButton(
-            self.settings_frame,
-            width=100,
-            text="Save Quiz",
-            font=Font(size=16),
-            state="normal",
-        )
-        self.save_quiz_button.grid(row=7, column=0, pady=(20, 38))
+        self.gen_quiz_button.grid(row=6, column=0, padx=10, pady=50)
 
     def init_prequiz(self):
         prequiz_text = ctk.CTkLabel(
@@ -135,7 +128,12 @@ class QuizGenerator(ctk.CTkFrame):
         prequiz_text2.grid(row=1, column=0, pady=(10, 170), sticky="nse")
 
         button_to_saves = ctk.CTkButton(
-            self.prequiz_frame, width=80, font=Font(size=16), text="Click here"
+            self.prequiz_frame,
+            border_width=1,
+            border_color="#36719F",
+            width=80,
+            font=Font(size=16),
+            text="Click here",
         )
         button_to_saves.grid(row=1, column=1, padx=10, pady=(10, 170), sticky="w")
 
@@ -192,6 +190,7 @@ class QuizGenerator(ctk.CTkFrame):
         print(al_response)
 
         quiz_data = json.loads(al_response)
+
         quiz = quiz_frame.Quiz(self)
         quiz.tkraise()
         quiz.init_quiz(subject, ed_level, user_topic, quiz_data)

@@ -1,12 +1,12 @@
 import customtkinter as ctk
 from customtkinter import CTkFont as Font
 from tkinter import messagebox
+from textwrap import wrap
 
-import quiz_gen_frame
 import quiz_results_frame
 
 
-class Quiz(ctk.CTkFrame):
+class Quiz(ctk.CTkScrollableFrame):
     def __init__(self, root):
         super().__init__(root, fg_color="transparent")
         self.root = root
@@ -29,11 +29,12 @@ class Quiz(ctk.CTkFrame):
                 self,
                 text=f"{self.subject} Quiz: {self.user_topic}",
                 font=Font(size=20, weight="bold"),
+                bg_color="white"
             )
-        title.grid(row=0, padx=250 - len(title._text), pady=(20, 0), sticky="nswe")
+        title.grid(row=0, pady=(20, 0), sticky="we")
 
         subtitle = ctk.CTkLabel(self, text=f"{self.ed_level} level", font=Font(size=14))
-        subtitle.grid(row=1)
+        subtitle.grid(row=1, sticky="we")
 
         self.display_question(0)
 
@@ -46,33 +47,37 @@ class Quiz(ctk.CTkFrame):
             wraplength=500,
             justify="left",
         )
-        self.question_label.grid(row=2, padx=20, pady=10, sticky="w")
+        if len(self.question_label._text) < 180:
+            self.question_label.grid(row=2, padx=(10, 200-len(self.question_label._text)), pady=10, sticky="we")
+        else:
+            self.question_label.grid(row=2, padx=10, pady=10, sticky="we")
+
 
         self.radio_a = ctk.CTkRadioButton(
             self,
             font=Font(size=16),
-            text=self.quiz_data[count]["choices"][0],
+            text=self.wrap_text(self.quiz_data[count]["choices"][0]),
             value=self.quiz_data[count]["choices"][0],
             variable=radio_var,
         )
         self.radio_b = ctk.CTkRadioButton(
             self,
             font=Font(size=16),
-            text=self.quiz_data[count]["choices"][1],
+            text=self.wrap_text(self.quiz_data[count]["choices"][1]),
             value=self.quiz_data[count]["choices"][1],
             variable=radio_var,
         )
         self.radio_c = ctk.CTkRadioButton(
             self,
             font=Font(size=16),
-            text=self.quiz_data[count]["choices"][2],
+            text=self.wrap_text(self.quiz_data[count]["choices"][2]),
             value=self.quiz_data[count]["choices"][2],
             variable=radio_var,
         )
         self.radio_d = ctk.CTkRadioButton(
             self,
             font=Font(size=16),
-            text=self.quiz_data[count]["choices"][3],
+            text=self.wrap_text(self.quiz_data[count]["choices"][3]),
             value=self.quiz_data[count]["choices"][3],
             variable=radio_var,
         )
@@ -83,11 +88,17 @@ class Quiz(ctk.CTkFrame):
 
         submit_button = ctk.CTkButton(
             self,
+            border_width=1,
+            border_color="#36719F",
             text="Submit",
             font=Font(size=16, weight="bold"),
             command=lambda: self.submit_answer(radio_var.get(), count),
         )
-        submit_button.grid(row=7, padx=(0, 50), pady=(20, 50), sticky="e")
+        submit_button.grid(row=7, padx=(0, 20), pady=(30, 10), sticky="e")
+
+    def wrap_text(self, text):
+        wrapped = "\n".join(wrap(text, 60))
+        return wrapped
 
     def submit_answer(self, student_answer, count):
         if student_answer == "":
@@ -97,17 +108,19 @@ class Quiz(ctk.CTkFrame):
             )
             error_box
         else:
-            self.quiz_data[count]["student answer"] = student_answer
+            self.quiz_data[count]["student_answer"] = student_answer
             count += 1
-            self.question_label.grid_forget()
-            self.radio_a.grid_forget()
-            self.radio_b.grid_forget()
-            self.radio_c.grid_forget()
-            self.radio_d.grid_forget()
+            self.question_label.destroy()
+            self.radio_a.destroy()
+            self.radio_b.destroy()
+            self.radio_c.destroy()
+            self.radio_d.destroy()
 
             if count < len(self.quiz_data):
                 self.display_question(count)
             else:
                 results = quiz_results_frame.QuizResults(self.root)
+                results.tkraise()
                 results.init_results(self.ed_level, self.subject, self.user_topic, self.quiz_data)
-                self.grid_forget()
+
+                self.destroy()
