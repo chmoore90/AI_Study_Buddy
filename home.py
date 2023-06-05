@@ -2,6 +2,7 @@ import customtkinter as ctk
 from customtkinter import CTkFont as Font
 from PIL import Image
 
+import waiting_frame
 
 class Home(ctk.CTkFrame):
     def __init__(self, root, ask_frame, quiz_gen_frame):

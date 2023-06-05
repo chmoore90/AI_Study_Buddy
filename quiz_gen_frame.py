@@ -2,7 +2,9 @@ import customtkinter as ctk
 from customtkinter import CTkFont as Font
 from tkinter import messagebox
 import json
+import multiprocessing as mp
 
+import waiting_frame
 import quiz_frame
 from ai_classes import Quizinator
 
@@ -26,8 +28,6 @@ ed_level_list = [
 class QuizGenerator(ctk.CTkFrame):
     def __init__(self, root):
         super().__init__(root, border_width=2)
-        self.configure(width=500, height=400)
-        self.propagate(False)
         self.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="nsew")
 
         self.settings_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -174,9 +174,19 @@ class QuizGenerator(ctk.CTkFrame):
             self.other_subject.configure(state="readonly", text_color="grey")
             self.user_topic_entry.configure(state="readonly", text_color="grey")
 
-            self.generate_quiz(subject, ed_level)
+
+
+            self.load_waiting_page(subject, ed_level)
+
+    def load_waiting_page(self, subject, ed_level):
+        loading_frame = waiting_frame.LoadingFrame(self, "generating quiz")
+        loading_frame.tkraise()
+
+        self.generate_quiz(subject, ed_level)
 
     def generate_quiz(self, subject, ed_level):
+
+
         if subject == "Other":
             subject = self.other_subject.get()
         user_topic = self.user_topic_entry.get()
@@ -191,6 +201,8 @@ class QuizGenerator(ctk.CTkFrame):
 
         quiz_data = json.loads(al_response)
 
+
+
         quiz = quiz_frame.Quiz(self)
-        quiz.tkraise()
         quiz.init_quiz(subject, ed_level, user_topic, quiz_data)
+        quiz.tkraise()
